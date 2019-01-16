@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 """
 Author: Michał Sypetkowski
 
@@ -30,14 +29,15 @@ def main(args):
             { 'name' : 'iris',
               'load_function' : load_iris,
               'class' : 'species', },
-            { 'name' : 'adult',
-              'load_function' : load_adult,
-              'class' : 'Target',
-              'subset' : 1000},
-            { 'name' : 'ctg',
-              'load_function' : load_ctg,
-              'class' : 'CLASS',
-            }
+            # { 'name' : 'adult',
+            #   'load_function' : load_adult,
+            #   'class' : 'Target',
+            #   'subset' : 500},
+            # { 'name' : 'ctg',
+            #   'load_function' : load_ctg,
+            #   'class' : 'CLASS',
+            #   'subset' : 500,
+            # }
         ],
         metrics=[
             { 'name' : 'Adjusted Rand Score',
@@ -50,16 +50,20 @@ def main(args):
             #   'function' : sklearn.cluster.KMeans,
             #   'args' : {'max_iter' : 100, 'n_init' : 1},
             #   'rep_count' : 10},
-            { 'name' : 'MyKMeans',
-              'function' : myclustering.MyKMeans,
-              'args' : {'max_iter' : 100, 'initialization_type' : 'Forgy'},
-              'rep_count' : 20},
-            { 'name' : 'MyKMeans',
-              'function' : myclustering.MyKMeans,
-              'args' : {'max_iter' : 100, 'initialization_type' : 'MeanStd'},
-              'rep_count' : 20},
-            { 'name' : 'sklearn AgglomerativeClustering',
-              'function' : sklearn.cluster.AgglomerativeClustering,
+            # { 'name' : 'MyKMeans',
+            #   'function' : myclustering.MyKMeans,
+            #   'args' : {'max_iter' : 100, 'initialization_type' : 'Forgy'},
+            #   'rep_count' : 20},
+            # { 'name' : 'MyKMeans',
+            #   'function' : myclustering.MyKMeans,
+            #   'args' : {'max_iter' : 100, 'initialization_type' : 'MeanStd'},
+            #   'rep_count' : 20},
+            # { 'name' : 'sklearn AgglomerativeClustering',
+            #   'function' : sklearn.cluster.AgglomerativeClustering,
+            #   'args' : {'linkage':'complete'},
+            #   'rep_count' : 1},
+            { 'name' : 'MyHAGClustering',
+              'function' : myclustering.MyHAGClustering,
               'args' : dict(),
               'rep_count' : 1},
         ],
@@ -138,7 +142,7 @@ def benchmark(args, datasets, metrics, algorithms, scaling_methods, n_clusterss)
         list of dicts with keys: name, function
 
     algorithms : list
-        list of dicts with keys: name, function, args
+        list of dicts with keys: name, function, args, rep_count
 
     scaling_methods : list
         list of dicts with keys: name, function
