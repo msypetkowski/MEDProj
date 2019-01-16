@@ -21,6 +21,8 @@ from matplotlib.backends.backend_pdf import PdfPages
 from datasets import *
 from metrics import *
 
+import myclustering
+
 
 def main(args):
     benchmark(args,
@@ -38,30 +40,38 @@ def main(args):
             }
         ],
         metrics=[
-            { 'name' : 'adjusted_rand_score',
+            { 'name' : 'Adjusted Rand Score',
               'function' : adjusted_rand_score, },
-            { 'name' : 'purity',
+            { 'name' : 'Purity',
               'function' : purity, },
         ],
         algorithms=[
-            { 'name' : 'sklearn.cluster.KMeans',
-              'function' : sklearn.cluster.KMeans,
-              'args' : {'max_iter' : 100},
-              'rep_count' : 10},
-            { 'name' : 'sklearn.cluster.AgglomerativeClustering',
+            # { 'name' : 'sklearn KMeans',
+            #   'function' : sklearn.cluster.KMeans,
+            #   'args' : {'max_iter' : 100, 'n_init' : 1},
+            #   'rep_count' : 10},
+            { 'name' : 'MyKMeans',
+              'function' : myclustering.MyKMeans,
+              'args' : {'max_iter' : 100, 'initialization_type' : 'Forgy'},
+              'rep_count' : 20},
+            { 'name' : 'MyKMeans',
+              'function' : myclustering.MyKMeans,
+              'args' : {'max_iter' : 100, 'initialization_type' : 'MeanStd'},
+              'rep_count' : 20},
+            { 'name' : 'sklearn AgglomerativeClustering',
               'function' : sklearn.cluster.AgglomerativeClustering,
               'args' : dict(),
               'rep_count' : 1},
         ],
         scaling_methods=[
-            { 'name' : 'None',
-              'function' : lambda x: x, },
-            { 'name' : 'min-max normalization',
+            # { 'name' : 'None',
+            #   'function' : lambda x: x, },
+            { 'name' : 'min-max',
               'function' : lambda df: (df-df.min(axis=0))/(df.max(axis=0)-df.min(axis=0)) },
-            { 'name' : 'mean-std normalization',
+            { 'name' : 'mean-std',
               'function' : lambda df: (df-df.mean(axis=0))/df.std(axis=0) },
         ],
-        n_clusterss=list(range(1,15))
+        n_clusterss=list(range(1,21))
     )
 
 
@@ -138,7 +148,7 @@ def benchmark(args, datasets, metrics, algorithms, scaling_methods, n_clusterss)
     """
 
     font = {'family' : 'DejaVu Sans',
-            'size'   : 16}
+            'size'   : 18}
     matplotlib.rc('font', **font)
     figures = []
 
@@ -163,10 +173,10 @@ def benchmark(args, datasets, metrics, algorithms, scaling_methods, n_clusterss)
             for algorithm in algorithms:
                 for scaling_method in scaling_methods:
                     scores = []
-                    plot_label = 'argorithm={}({}); scaling_method={}'.format(
+                    plot_label = 'alg={}({}); scaling={}; rep_count={}'.format(
                             algorithm['name'],
                             ', '.join([f'{k}={v}' for k,v in algorithm['args'].items()]),
-                            scaling_method['name'])
+                            scaling_method['name'], algorithm['rep_count'])
                     print(plot_label)
                     scaled_data = scaling_method['function'](data_no_class)
 
@@ -176,6 +186,9 @@ def benchmark(args, datasets, metrics, algorithms, scaling_methods, n_clusterss)
                             alg_object = algorithm['function'](n_clusters=n_clusters, **algorithm['args'])
                             alg_object.fit(scaled_data)
                             labels_pred = alg_object.labels_
+                            assert labels_pred.shape == (data.shape[0],) # TODO: remove
+                            assert (0 <= labels_pred).all() # TODO: remove
+                            assert (labels_pred < n_clusters).all() # TODO: remove
                             single_scores.append(metric['function'](labels_true=labels_true, labels_pred=labels_pred))
                         scores.append(np.mean(single_scores))
                         #if n_clusters == len(data[dataset['class']].unique()):
@@ -186,7 +199,7 @@ def benchmark(args, datasets, metrics, algorithms, scaling_methods, n_clusterss)
             plt.title(f'dataset={dataset["name"]}; metric={metric["name"]}' + '\n' + dataset_info)
             ax = plt.gca()
             ax.set_ylabel(metric["name"])
-            ax.set_xlabel('n_clusters')
+            ax.set_xlabel('Clusters count')
             plt.legend(handler_map={line: HandlerLine2D() for line in plot_lines})
             plt.grid(True)
             if args.show_plots:

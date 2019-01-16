@@ -1,4 +1,6 @@
 """
+Author: Michał Sypetkowski
+
 Functions for loading various datasets into pandas dataframes.
 """
 
