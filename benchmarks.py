@@ -28,15 +28,15 @@ def main(args):
         datasets=[
             { 'name' : 'iris',
               'load_function' : load_iris,
-              'class' : 'species', },
+              'class' : 'species',},
             { 'name' : 'adult',
               'load_function' : load_adult,
               'class' : 'Target',
-              'subset' : 500},
+              'subset' : 1000},
             { 'name' : 'ctg',
               'load_function' : load_ctg,
               'class' : 'CLASS',
-              'subset' : 500,
+              'subset' : 1000,
             }
         ],
         metrics=[
@@ -64,7 +64,7 @@ def main(args):
             #   'rep_count' : 1},
             { 'name' : 'MyHAGClustering',
               'function' : myclustering.MyHAGClustering,
-              'args' : dict(),
+              'args' : {'use_heap': True },
               'rep_count' : 1},
         ],
         scaling_methods=[
@@ -75,7 +75,7 @@ def main(args):
             { 'name' : 'mean-std',
               'function' : lambda df: (df-df.mean(axis=0))/df.std(axis=0) },
         ],
-        n_clusterss=list(range(1,21))
+        n_clusterss=list(range(1,15))
     )
 
 
