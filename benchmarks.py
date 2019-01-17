@@ -37,12 +37,12 @@ def main(args):
               'load_function' : load_ctg,
               'class' : 'CLASS',
               'subset' : 1000,
-            }
+            },
             { 'name' : 'cars',
               'load_function' : load_cars,
               'class' : 'class',
               'subset' : 1000,
-            }
+            },
         ],
         metrics=[
             { 'name' : 'Adjusted Rand Score',
@@ -141,7 +141,7 @@ def benchmark(args, datasets, metrics, algorithms, scaling_methods, n_clusterss)
         command line parameters concerning output of results and plot drawing
 
     datasets : list
-        list of dicts with keys: name, load_function, class
+        list of dicts with keys: name, load_function, class, subset (optional)
 
     metrics : list
         list of dicts with keys: name, function
@@ -200,9 +200,6 @@ def benchmark(args, datasets, metrics, algorithms, scaling_methods, n_clusterss)
                             assert (labels_pred < n_clusters).all() # TODO: remove
                             single_scores.append(metric['function'](labels_true=labels_true, labels_pred=labels_pred))
                         scores.append(np.mean(single_scores))
-                        #if n_clusters == len(data[dataset['class']].unique()):
-                        #    print('Confusion matrix for n_clusters == different class values count:')
-                        #    print(pd.crosstab(labels_true, labels_pred))
                     plot_lines.append(plt.plot(n_clusterss, scores, label=plot_label)[0])
 
             plt.title(f'dataset={dataset["name"]}; metric={metric["name"]}' + '\n' + dataset_info)
