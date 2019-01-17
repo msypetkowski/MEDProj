@@ -5,12 +5,12 @@ Implementation of Hierarchical Agglomerative Clustering
 (https://en.wikipedia.org/wiki/Hierarchical_clustering)
 
 Implemented is 2 variants:
-
 One with time complexity of O(n^3), and memory O(n^2).
-The other version has time complexity O(n^2*log(n))
+The other version has time complexity O(n^2*log(n)).
 It optimizes minimum index finding with priority queue.
 Here, this operation (np.unrevel_index) has anyway relatively low time coefficient,
-because the method is implemented in C++ in numpy, and python (interpreter) overhead is relatively high.
+because this method is implemented in C++ in numpy, and python (interpreter) overhead is relatively high.
+Therefore O(n^3) implementation may be faster for small/medium data.
 """
 
 import numpy as np

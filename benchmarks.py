@@ -38,6 +38,11 @@ def main(args):
               'class' : 'CLASS',
               'subset' : 1000,
             }
+            { 'name' : 'cars',
+              'load_function' : load_cars,
+              'class' : 'class',
+              'subset' : 1000,
+            }
         ],
         metrics=[
             { 'name' : 'Adjusted Rand Score',
@@ -64,7 +69,7 @@ def main(args):
             #   'rep_count' : 1},
             { 'name' : 'MyHAGClustering',
               'function' : myclustering.MyHAGClustering,
-              'args' : {'use_heap': True },
+              'args' : dict(),
               'rep_count' : 1},
         ],
         scaling_methods=[
@@ -222,7 +227,7 @@ if __name__ == '__main__':
         parser.add_argument('-s, --show_plots', dest='show_plots', action='store_true',
                 help="Show plots duing experiments.")
         parser.add_argument('-w, --plot_width', dest='plot_width', default=1500, type=int)
-        parser.add_argument('-h, --plot_height', dest='plot_height', default=1000, type=int)
+        parser.add_argument('-h, --plot_height', dest='plot_height', default=1200, type=int)
         parser.add_argument('-d, --plot_dpi', dest='plot_dpi', default=80, type=int)
         parser.add_argument('-o, --out_path', dest='out_path', default='plots.pdf', type=str)
         return parser.parse_args()
