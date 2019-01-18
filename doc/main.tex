@@ -1,0 +1,147 @@
+\documentclass[a4paper]{article}
+
+\usepackage[a4paper,  margin=0.4in]{geometry}
+
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{hyperref}
+\usepackage{longtable}
+
+
+
+\usepackage[utf8]{inputenc}
+\begin{document}
+
+
+\title{Project for MED classes - Implementation and comparison of K-means and HAG clustering algorithms}
+
+\author{Michał Sypetkowski}
+\setlength\columnsep{0.375in}  \newlength\titlebox \setlength\titlebox{2.25in}
+\twocolumn
+\maketitle
+
+
+\section{Introduction}
+
+In this raport, we implement and compare k-means\footnote{\url{https://en.wikipedia.org/wiki/K-means_clustering}}
+and HAG\footnote{\url{https://en.wikipedia.org/wiki/Hierarchical_clustering}}clustering algorithms.
+We perform accurate measurement on 4 datasets.
+
+\section{Implementations}
+
+We implement standard k-means algorithm with 2 different initialization techniques:
+\begin{itemize}
+        \item mean-std -- randomized with means and standard deviations calculated column-vise.
+        \item Forgy -- by taking randomly sampled examples from dataset as initial k-means values. 
+\end{itemize}
+
+We implement HAG in 2 different complexies:
+$O(n^3)$ and $O(n^2log(n))$ (using priority queue).
+For small datasets, $O(n^3)$ is faster in our implementation because of python overheads.
+
+Experiments are implementad to run automatically using one command,
+and simple configuration including list of algorithms, metrics, etc.
+
+\section{Experiments}
+
+We run experiments on 4 datasets:
+\begin{itemize}
+\item iris -- 150 samples, 5 columns, 3 classes
+\item adult -- 1000 samples, 92 columns, 2 classes
+\item ctg  -- subset of 1000 samples, 23 columns, 10 classes
+\item cars -- 1000 samples, 22 columns, 4 classes
+\end{itemize}
+For each dataset, we transform nominal attributes of $n$ possible values into $n$ numeric columns with 0 and 1 values.
+We subset ctg, adult, and cars dataset to 1000 samples, to reduce variance in results caused by different samples count.
+We use Adjusted Rand Score\footnote{\url{https://en.wikipedia.org/wiki/Rand_index}}
+and purity\footnote{\url{https://nlp.stanford.edu/IR-book/html/htmledition/evaluation-of-clustering-1.html}} as metrics.
+We perform all experiments with different number of clusters (from 1 to 15),
+and with 2 different scaling methods -- min-max and mean-std.
+
+
+On iris dataset (figures \ref{fig:iris_rand} and \ref{fig:iris_purity},
+both algorithms achieve comparable results.
+K-means is slightly better in terms of ARS.
+
+On adult dataset (figures \ref{fig:adult_rand} and \ref{fig:adult_purity},
+scaling method significantly affects the result.
+Min-max scaling enables better clustering because of large number of columns.
+
+On cars (figures \ref{fig:cars_rand} and \ref{fig:cars_purity}
+and ctg (figures \ref{fig:ctg_rand} and \ref{fig:ctg_purity} datasets,
+k-means significantly outperforms HAG.
+
+
+
+\section{Conclusions}
+
+Basing on our experiments, we observe that in general 
+K-means works better, especially for datasets with a high nuber of class values (>3), and
+HAG may eventually achieve better results for many clusters,
+there are multiple columns in dataset, and there is small number of classes (<=3).
+Moreover, HAG is not useful for clustering large datasets due to it's computional complexity.
+
+
+\onecolumn
+
+\begin{figure}[!hbt]
+    \centering
+    \includegraphics[trim={0cm 0cm 0cm 0cm},clip,page=1,width=1.0\textwidth]{../plots.pdf}
+    \caption[]{Adjusted rand Score on iris dataset.
+    \label{fig:iris_rand}
+    }
+\end{figure}
+\begin{figure}[!hbt]
+    \centering
+    \includegraphics[trim={0cm 0cm 0cm 0cm},clip,page=2,width=1.0\textwidth]{../plots.pdf}
+    \caption[]{Purity on iris dataset.
+    \label{fig:iris_purity}
+    }
+\end{figure}
+
+\begin{figure}[!hbt]
+    \centering
+    \includegraphics[trim={0cm 0cm 0cm 0cm},clip,page=3,width=1.0\textwidth]{../plots.pdf}
+    \caption[]{Adjusted rand Score on adult dataset.
+    \label{fig:adult_rand}
+    }
+\end{figure}
+\begin{figure}[!hbt]
+    \centering
+    \includegraphics[trim={0cm 0cm 0cm 0cm},clip,page=4,width=1.0\textwidth]{../plots.pdf}
+    \caption[]{Purity on adult dataset.
+    \label{fig:adult_purity}
+    }
+\end{figure}
+
+\begin{figure}[!hbt]
+    \centering
+    \includegraphics[trim={0cm 0cm 0cm 0cm},clip,page=5,width=1.0\textwidth]{../plots.pdf}
+    \caption[]{Adjusted rand Score on ctg dataset.
+    \label{fig:ctg_rand}
+    }
+\end{figure}
+\begin{figure}[!hbt]
+    \centering
+    \includegraphics[trim={0cm 0cm 0cm 0cm},clip,page=6,width=1.0\textwidth]{../plots.pdf}
+    \caption[]{Purity on ctg dataset.
+    \label{fig:ctg_purity}
+    }
+\end{figure}
+
+\begin{figure}[!hbt]
+    \centering
+    \includegraphics[trim={0cm 0cm 0cm 0cm},clip,page=7,width=1.0\textwidth]{../plots.pdf}
+    \caption[]{Adjusted rand Score on cars dataset.
+    \label{fig:cars_rand}
+    }
+\end{figure}
+\begin{figure}[!hbt]
+    \centering
+    \includegraphics[trim={0cm 0cm 0cm 0cm},clip,page=8,width=1.0\textwidth]{../plots.pdf}
+    \caption[]{Purity on cars dataset.
+    \label{fig:cars_purity}
+    }
+\end{figure}
+\end{document}
